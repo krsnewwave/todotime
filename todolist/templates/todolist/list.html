@@ -1,0 +1,46 @@
+<h3>It is the {% now "jS F Y H:i" %}</h3>
+
+
+{% if notes %}
+    <table>
+        <tr>
+            <th>Note</th>
+            <th>Date Posted</th>
+            <th>Date Due</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        <tr>
+            {% for n in notes %}
+                <td><a href="{% url 'edit' n.id %}">{{ n.text }}</td>
+                <td>{{ n.date_posted }}</td>
+                <td>{{ n.date_due }}</td>
+                <td>
+                    {% if n.is_done %}
+                        Done
+                    {% elif n.is_cancelled %}
+                        Cancelled
+                    {% else %}
+                        Not Done
+                    {% endif %}
+                </td>
+                <td>
+                    {% if not n.is_done and not n.is_cancelled %}<a href="{% url 'done' n.id %}">Mark as Done</a>
+                        <a href="{% url 'cancel' n.id %}">Mark as Cancelled</a>
+                        {% comment %} <a href="/todolist/done/{{ n.id }}/">Mark as Done</a>
+                        <a href="/todolist/cancel/{{ n.id }}/">Mark as Cancelled</a>{% endcomment %}
+                    {% else %}
+                        <a href="{% url 'reset' n.id %}">Reset</a>
+                    {% endif %}
+                    <a href="{% url 'delete' n.id %}">Delete</a>
+                </td>
+                </tr>
+            {% endfor %}
+    </table>
+{% else %}
+    <p>No notes are available.</p>
+{% endif %}
+
+<hr>
+<a href="{% url 'new' %}">New Note</a>
+<a href="{% url 'logout' %}">Logout</a>

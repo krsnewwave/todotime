@@ -1,0 +1,38 @@
+[
+{
+  "pk": 1,
+  "model": "auth.user",
+  "fields": {
+    "last_name": "",
+    "last_login": "2014-12-07T11:35:35.813Z",
+    "date_joined": "2014-12-06T15:48:47.531Z",
+    "is_active": true,
+    "email": "dylan_valerio@yahoo.com",
+    "user_permissions": [],
+    "username": "dylanv",
+    "groups": [],
+    "password": "pbkdf2_sha256$12000$Nfd6WthNH2HE$3uwCsEXS96ChAh3E9yIsP3oboqg0VtUc7piwNMb3qAc=",
+    "is_superuser": true,
+    "is_staff": true,
+    "first_name": ""
+  }
+},
+{
+  "pk": 2,
+  "model": "auth.user",
+  "fields": {
+    "last_name": "",
+    "last_login": "2014-12-06T15:57:02.172Z",
+    "date_joined": "2014-12-06T15:57:02.172Z",
+    "is_active": true,
+    "email": "",
+    "user_permissions": [],
+    "username": "mikhail",
+    "groups": [],
+    "password": "pbkdf2_sha256$12000$0gBcMwt8dB22$ML9BX7/LJw0pobUIgU/XXujSs07DjN4MftpMtYn6KpY=",
+    "is_superuser": false,
+    "is_staff": false,
+    "first_name": ""
+  }
+}
+]

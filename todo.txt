@@ -1,0 +1,10 @@
+1. Login / Create users page
+2. post note page
+3. View notes page
+4. Edit notes page
+5. 7-days purge page
+
+users:
+mikhail
+benjamin
+earl
