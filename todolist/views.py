@@ -1,23 +1,16 @@
-from datetime import timedelta
+from datetime import timedelta, datetime
+from time import strptime, strftime
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response, render
+from django.shortcuts import render_to_response, render, get_object_or_404
 from django.http import HttpResponseRedirect, Http404
 from django.template import RequestContext
 from django.utils.datetime_safe import date
-from django.views.generic import UpdateView, CreateView
+from django.views.generic import UpdateView, CreateView, WeekArchiveView, MonthArchiveView
 from django.contrib.auth import authenticate, login, logout
 
 from todolist.forms import UserForm, NewNoteForm, UpdateNoteForm
 from todolist.models import Note
-
-
-def index(request):
-    # TODO: after login, displays ALL the user's notes
-    notes = Note.objects.order_by('-date_due')
-    output = {'notes': notes}
-
-    return render(request, 'todolist/list.html', output)
 
 
 def register(request):
@@ -73,11 +66,27 @@ def login_user(request):
 def user_home(request):
     """Defines the user's home page. Shows a tabular representation of the user's documents"""
     user = request.user
-    user_notes = Note.objects.filter(user_id=user.id)
-    # sorted_user_notes = sorted(user_notes, key=lambda note: note.date_posted)
-    # Entry.objects.filter(blog_id=4)
+    year = request.GET.get('year')
+    if request.GET.get('query'):
+        # if week is ALL, then create the date
+        week = request.GET.get('week')
+        month = request.GET.get('month')
+        if week == 'All':
+            filter_date = datetime.strptime(month + ' ' + year, "%m %Y")
+            user_notes = Note.objects.filter(user_id=user.id, date_due__gte=filter_date,
+                                             date_due__lt=filter_date + timedelta(weeks=4))
+        # else, do some tricks on weeks & months
+        else:
+            filter_date = datetime.strptime(month + ' ' + year, "%m %Y")
+            week_start = filter_date + timedelta(weeks=int(week) - 1)
+            user_notes = Note.objects.filter(user_id=user.id,
+                                             date_due__gte=week_start,
+                                             date_due__lt=week_start + timedelta(weeks=1))
 
-    #+1 day rule.
+    else:
+        user_notes = Note.objects.filter(user_id=user.id)
+
+    # +1 day rule.
     curr_date = date.today()
     for user_note in user_notes:
         if (not user_note.is_cancelled or not user_note.is_done) and user_note.date_due.date() < curr_date:
@@ -190,5 +199,25 @@ class NoteUpdate(UpdateView):
     success_url = '/todolist/'
 
 
+# CBV for weekly view
+class NoteWeeklyView(WeekArchiveView):
+    queryset = Note.objects.all()
+    date_field = "date_due"
+    make_object_list = True
+    week_format = "%W"
+    allow_future = True
+    template_name_suffix = "_week"
+
+
+# CBV for monthly view
+class NoteMonthlyView(MonthArchiveView):
+    model = Note
+    date_field = "date_due"
+    make_object_list = True
+    allow_future = True
+    template_name_suffix = "_month"
+
+    def get_queryset(self):
+        return Note.objects.filter(user=self.request.user)
 
 

@@ -75,7 +75,8 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+#setting this to false as setting time zones is a detail I don't want to get to right now
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)

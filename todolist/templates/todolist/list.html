@@ -1,5 +1,44 @@
 <h3>It is the {% now "jS F Y H:i" %}</h3>
 
+<form action="{% url 'user_home' %}" method="get">
+    <label for="year">Query by Year</label>
+    <select name="year" id="year" size="1">
+        <option value="2014">2014</option>
+        <option value="2015">2015</option>
+        <option value="2016">2016</option>
+        <option value="2017">2017</option>
+        <option value="2018">2018</option>
+        <option value="2019">2019</option>
+        <option value="2020">2020</option>
+    </select>
+
+    <label for="month">Query by Month</label>
+    <select name="month" id="month" size="1">
+        <option value="01">January</option>
+        <option value="02">February</option>
+        <option value="03">March</option>
+        <option value="04">April</option>
+        <option value="05">May</option>
+        <option value="06">June</option>
+        <option value="07">July</option>
+        <option value="08">August</option>
+        <option value="09">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+    </select>
+
+    <label for="week">Query by Week</label>
+    <select name="week" id="week" size="1">
+        <option value="All">All</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+    </select>
+    <input type="submit" name = "query" value="Query"/>
+    <input type="submit" name = "reset" value="Reset"/>
+</form>
 
 {% if notes %}
     <table>

@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.forms.extras import SelectDateWidget
+from todolist import DateFilterWidget
 
 from todolist.models import Note
 
@@ -30,3 +31,7 @@ class UpdateNoteForm(forms.ModelForm):
     class Meta:
         model = Note
         fields = ('text', 'date_due')
+
+
+class MonthWeekForm(forms.Form):
+    month = forms.DateField(widget=DateFilterWidget)
