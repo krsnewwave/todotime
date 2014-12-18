@@ -1,5 +1,4 @@
 from datetime import timedelta, datetime
-from time import strptime, strftime
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render_to_response, render, get_object_or_404
@@ -86,8 +85,19 @@ def user_home(request):
     else:
         user_notes = Note.objects.filter(user_id=user.id)
 
-    # +1 day rule.
     curr_date = date.today()
+    week_ago = curr_date - timedelta(days=7)
+    purged_items = []
+    # purge 7 days rule
+    for user_note in user_notes:
+        if user_note.date_posted.date() < week_ago:
+            # delete
+            Note.objects.filter(id=user_note.id).delete()
+            purged_items.append(user_note.id)
+
+    user_notes = user_notes.exclude(id__in=purged_items)
+
+    # +1 day rule.
     for user_note in user_notes:
         if (not user_note.is_cancelled or not user_note.is_done) and user_note.date_due.date() < curr_date:
             user_note.date_due = curr_date + timedelta(days=1)

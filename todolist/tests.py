@@ -1,8 +1,10 @@
 import datetime
+from django.contrib.auth.models import User
 from django.test import LiveServerTestCase
 from django.utils import dateformat
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
+from todolist.models import Note
 
 
 class AdminTest(LiveServerTestCase):
@@ -197,7 +199,7 @@ class AdminTest(LiveServerTestCase):
         # create the note, curr month, curr year, curr day + 7
         self.test_new_note()
 
-        #click that note
+        # click that note
         expected_note_text = 'test new note'
         edit_text = 'test edit note'
         text = self.browser.find_element_by_link_text(expected_note_text)
@@ -220,10 +222,29 @@ class AdminTest(LiveServerTestCase):
         self.browser.find_element_by_xpath(
             "//select[@id='id_date_due_year']/option[text()='%s']" % curr_date.strftime("%Y")).click()
 
-         # click update
+        # click update
         text.send_keys(Keys.RETURN)
 
-        #go to main index, find that dates have been updated
+        # go to main index, find that dates have been updated
         body = self.browser.find_element_by_tag_name('body')
         self.assertIn(day_3.strftime('%b. %d, %Y'), body.text)
+
+    def test_7_days_purge(self):
+        """Adds a new note in the past, should not appear in main index"""
+        note = Note()
+        expected_note_text = 'old note'
+        note.text = '%s' % expected_note_text
+        note.is_cancelled = False
+        note.is_done = False
+        note.date_due = datetime.date.today()
+        note.date_posted = datetime.date.today() - datetime.timedelta(days=8)
+        note.user_id = 1
+        note.save()
+
+        self.test_login()
+
+        # should not find anything
+        body = self.browser.find_element_by_tag_name('body')
+        self.assertNotIn(expected_note_text, body.text)
+
 
