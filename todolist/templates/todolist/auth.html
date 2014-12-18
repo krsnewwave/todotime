@@ -25,5 +25,10 @@
 
     <input type="submit" value="Log In"/>
 </form>
+
+<form action="/todolist/register/" method="post">
+    {% csrf_token %}
+    <input type="submit" value="Register"/>
+</form>
 </body>
 </html>
